@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "spring.jackson.encoding",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.jackson.encoding'"
+  },
+  {
+    "name": "spring.jackson.force-utf8",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.jackson.force-utf8'"
+  }
+]}
