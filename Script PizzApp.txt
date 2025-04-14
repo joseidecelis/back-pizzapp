@@ -1,0 +1,60 @@
+-- Tabla de clientes
+CREATE TABLE cliente (
+  id BIGSERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  telefono VARCHAR(20),
+  direccion VARCHAR(200)
+);
+
+-- Tabla de pizzas
+CREATE TABLE pizza (
+  id BIGSERIAL PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT,
+  precio_base DECIMAL(10,2) NOT NULL,
+  disponible BOOLEAN DEFAULT TRUE
+);
+
+-- Ingredientes disponibles
+CREATE TABLE ingrediente (
+  id BIGSERIAL PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  precio_extra DECIMAL(10,2) DEFAULT 0
+);
+
+-- Ingredientes que componen cada pizza (receta base)
+CREATE TABLE pizza_ingrediente (
+  pizza_id BIGINT REFERENCES pizza(id) ON DELETE CASCADE,
+  ingrediente_id BIGINT REFERENCES ingrediente(id) ON DELETE CASCADE,
+  PRIMARY KEY (pizza_id, ingrediente_id)
+);
+
+-- Ventas realizadas
+CREATE TABLE venta (
+  id BIGSERIAL PRIMARY KEY,
+  fecha DATE NOT NULL,
+  hora TIME NOT NULL,
+  cliente_id BIGINT REFERENCES cliente(id),
+  total DECIMAL(10,2) NOT NULL,
+  metodo_pago VARCHAR(50),
+  direccion_entrega VARCHAR(200),
+  notas TEXT
+);
+
+-- Detalle de cada producto vendido en una venta
+CREATE TABLE detalle_venta (
+  id BIGSERIAL PRIMARY KEY,
+  venta_id BIGINT REFERENCES venta(id) ON DELETE CASCADE,
+  pizza_id BIGINT REFERENCES pizza(id),
+  cantidad INT NOT NULL,
+  precio_unitario DECIMAL(10,2) NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL
+);
+
+-- Ingredientes modificados en una venta específica
+CREATE TABLE detalle_venta_ingrediente (
+  id BIGSERIAL PRIMARY KEY,
+  detalle_venta_id BIGINT REFERENCES detalle_venta(id) ON DELETE CASCADE,
+  ingrediente_id BIGINT REFERENCES ingrediente(id),
+  tipo_modificacion VARCHAR(10) CHECK (tipo_modificacion IN ('agregado', 'removido'))
+);
